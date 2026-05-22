@@ -68,7 +68,7 @@ export const login = async (email, password) => {
 };
 
 export const getCurrentUser = async () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('innomatrics_admin_token');
   if (!token) throw new Error('Not authenticated');
   
   return {

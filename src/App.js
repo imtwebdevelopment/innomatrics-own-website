@@ -36,21 +36,27 @@ import RefundCancellationPolicy from './components/Footer/Legal/RefundCancellati
 import DataRetentionPolicy from './components/Footer/Legal/DataRetentionPolicy';
 
 // Admin Components
+import AdminLogin from './components/Admin/AdminLogin';
+import AdminDashboard from './components/Admin/AdminDashboard';
+import AdminBlogs from './components/Admin/AdminBlogs';
+import AdminBlogForm from './components/Admin/AdminBlogForm';
 
-
-
+// Public Blog Detail
+import BlogDetail from './components/Blog/BlogDetail';
 
 function App() {
-  // You can add authentication check here
-  const isAuthenticated = true; // Replace with actual auth check
-
   return (
     <Router>
       <Routes>
         {/* Admin Routes */}
-        
-
-        {/* Main Website Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="blogs" element={<AdminBlogs />} />
+          <Route path="blogs/new" element={<AdminBlogForm />} />
+          <Route path="blogs/edit/:id" element={<AdminBlogForm />} />
+        </Route>        {/* Main Website Routes */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
@@ -63,6 +69,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="careers" element={<Career />} />
           <Route path="blog" element={<BlogPage />} />
+          <Route path="blog/:slug" element={<BlogDetail />} />
           <Route path="quote" element={<Quote />} />
 
           {/* Service Routes */}

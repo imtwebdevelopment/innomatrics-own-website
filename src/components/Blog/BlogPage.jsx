@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NAv from "../Navbar/NAv";
+import blogService from "../../utils/blogService";
 
 const BlogPage = () => {
   const categories = [
@@ -14,45 +15,14 @@ const BlogPage = () => {
   ];
 
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState([]);
 
-  const blogPosts = [
-    {
-      title: "The Future of Web Development: Trends to Watch in 2024",
-      excerpt: "Explore the latest trends shaping the future of web development, from AI integration to advanced frameworks.",
-      category: "Web Development",
-      image: "https://t3.ftcdn.net/jpg/08/71/60/32/360_F_871603234_fTMmjlUOpt4F9mDudj8wjyzkt0khEtSZ.jpg"
-    },
-    {
-      title: "How AI is Transforming Digital Marketing",
-      excerpt: "Discover how artificial intelligence is revolutionizing digital marketing strategies and customer engagement.",
-      category: "Digital Marketing",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyYUBp-sS7gkr50RwnCu5hElWKdKNuk3eqbw&s"
-    },
-    {
-      title: "Mobile App Development: Native vs Cross-Platform",
-      excerpt: "A comprehensive comparison of native and cross-platform mobile app development approaches.",
-      category: "Mobile Development",
-      image: "https://img.freepik.com/free-vector/app-development-banner_33099-1720.jpg"
-    },
-    {
-      title: "Designing for Accessibility: Best Practices",
-      excerpt: "Learn how to create inclusive digital experiences that work for everyone.",
-      category: "UI/UX Design",
-      image: "https://img.freepik.com/free-vector/gradient-ui-ux-background_23-2149024129.jpg"
-    },
-    {
-      title: "Innomatrics Wins Best Tech Innovation Award 2024",
-      excerpt: "We're proud to announce our recent recognition at the Annual Tech Excellence Awards.",
-      category: "Company News",
-      image: "https://img.freepik.com/free-vector/gradient-technology-award-illustration_52683-62314.jpg"
-    },
-    {
-      title: "The Rise of Edge Computing in 2024",
-      excerpt: "Understanding the impact of edge computing on modern application architecture.",
-      category: "Technology",
-      image: "https://img.freepik.com/free-vector/digital-technology-background-with-hexagonal-segments-circuit-pattern_1017-41325.jpg"
-    }
-  ];
+  useEffect(() => {
+    // Load published blogs from local storage
+    const allBlogs = blogService.getBlogs();
+    const published = allBlogs.filter(post => post.status === 'Published');
+    setBlogPosts(published);
+  }, []);
 
   const filteredPosts = selectedCategory === "All"
     ? blogPosts
@@ -124,7 +94,7 @@ const BlogPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post, index) => (
             <article
-              key={index}
+              key={post.id || index}
               className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="relative h-48 overflow-hidden">
@@ -142,7 +112,7 @@ const BlogPage = () => {
 
               <div className="p-6">
                 <h3 className="mt-2 text-xl font-semibold text-gray-900 group-hover:text-blue-600 line-clamp-2">
-                  <Link to={`/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-blue-600 transition-colors duration-200">
+                  <Link to={`/blog/${post.slug || post.title.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-blue-600 transition-colors duration-200">
                     {post.title}
                   </Link>
                 </h3>
@@ -153,7 +123,7 @@ const BlogPage = () => {
 
                 <div className="mt-4 flex items-center justify-between">
                   <Link 
-                    to={`/blog/${post.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    to={`/blog/${post.slug || post.title.toLowerCase().replace(/\s+/g, '-')}`}
                     className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
                   >
                     Read More 
